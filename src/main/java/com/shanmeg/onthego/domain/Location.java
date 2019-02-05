@@ -1,8 +1,12 @@
 package com.shanmeg.onthego.domain;
 
+import lombok.Data;
+
 /**
  * Created by shantanu on 1/28/19.
  */
+
+@Data
 public class Location {
 
     private String address1;
