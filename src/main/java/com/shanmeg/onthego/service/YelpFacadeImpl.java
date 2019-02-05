@@ -16,6 +16,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by shantanu on 1/28/19.
@@ -45,17 +46,18 @@ public class YelpFacadeImpl implements YelpFacade {
         httpHeaders.set("Authorization", "Bearer lJfQK0JSuesKoXRUkG8PkpoW4sSr0iRR2xFkAO0fqClBKqmQ7EdHDFDDSRek170Ywm5EZ4CwOpzSGTJHrnEaffWP7P2mLCTNCCuJ03XJR1c1FyLY_hdYC8uZAYNKXHYx");
         HttpEntity httpEntity = new HttpEntity(httpHeaders);
 
-        ResponseEntity<List<Business>> businesses;
+        ResponseEntity<Map<String, Object>> yelpResponse;
 
         try {
-            businesses = restTemplate.exchange(searchUrl, HttpMethod.GET,
-                    httpEntity, new ParameterizedTypeReference<List<Business>>() {});
+            yelpResponse = restTemplate.exchange(searchUrl, HttpMethod.GET,
+                    httpEntity, new ParameterizedTypeReference<Map<String, Object>>() {});
         } catch (RestClientException rce) {
             log.error("Exception while fetching businesses from Yelp for term={} and location={}, exception={}",
                     term, location, rce.getMessage());
             throw new InternalServerErrorException("Exception while fetching businesses from Yelp");
         }
 
-        return businesses.getBody();
+        Map<String, Object> yelpResponseMap = yelpResponse.getBody();
+        return (List<Business>)yelpResponseMap.get("businesses");
     }
 }
